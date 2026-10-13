@@ -8,21 +8,39 @@ router.post("/register", async (req, res) => {
         const { username, password } = req.body;
 
         //Validera input
-        if(!username || !password) {
-            return res.status(400).json({error: "Invalid input, send username and password"});
+        if (!username || !password) {
+            return res.status(400).json({ error: "Invalid input, send username and password" });
         }
 
         //Korrekt, spara användare
-        res.status(201).json({message: "User created"});
+        res.status(201).json({ message: "User created" });
 
     } catch (error) {
-        res.status(500).json({error: "Server error"});
+        res.status(500).json({ error: "Server error" });
     }
 });
 
 //Logga in användare
 router.post("/login", async (req, res) => {
-    console.log("login kallad...")
+    try {
+        const { username, password } = req.body;
+
+        //Validera input
+        if (!username || !password) {
+            return res.status(400).json({ error: "Invalid input, send username and password" });
+        }
+
+        //Kontrollera om inlogging stämmer
+        if(username === "Frida" && password === "hej123") {
+            res.status(200).json({ message: "Login successful" });
+        } else {
+             res.status(401).json({ error: "Invalid username/password" });
+        }
+
+
+    } catch (error) {
+        res.status(500).json({ error: "Server error" });
+    }
 });
 
 module.exports = router;
