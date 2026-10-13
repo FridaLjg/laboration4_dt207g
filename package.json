@@ -1,0 +1,19 @@
+{
+  "name": "laboration4_dt207g",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "serve": "nodemon server.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "dependencies": {
+    "body-parser": "^2.3.0",
+    "express": "^5.3.0",
+    "nodemon": "^3.1.14",
+    "router": "^2.2.0"
+  }
+}
