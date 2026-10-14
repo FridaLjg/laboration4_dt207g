@@ -26,6 +26,15 @@ router.post("/register", async (req, res) => {
             return res.status(400).json({ error: "Invalid input, send username and password" });
         }
 
+        // Kontrollera om användaren redan finns
+        const existingUser = await User.findOne({ username });
+
+        if (existingUser) {
+            return res.status(400).json({
+                error: "Användarnamnet finns redan"
+            });
+        }
+
         //Korrekt, spara användare
         const user = new User({ username, password });
         await user.save();
