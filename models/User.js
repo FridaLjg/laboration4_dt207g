@@ -32,3 +32,14 @@ userSchema.pre("save", async function (next) {
         next(error);
     }
 });
+
+//Regristrera användare
+userSchema.statics.register = async (username, password) => {
+    try {
+        const user = new this ({ username, password});
+        await user.save();
+        return user;
+    } catch(error) {
+        throw error;
+    }
+};
