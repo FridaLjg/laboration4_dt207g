@@ -50,7 +50,7 @@ router.post("/login", async (req, res) => {
         //Finns användaren?
         const user = await User.findOne({ username });
         if (!user) {
-            return res.status(401({ error: "Felaktigt användarnamn/lösenord!" }));
+            return res.status(401).json({ error: "Felaktigt användarnamn/lösenord!" });
         }
 
         //Kontrollera lösenordet
@@ -58,7 +58,14 @@ router.post("/login", async (req, res) => {
         if (!isPasswordMatch) {
             return res.status(401({ error: "Felaktigt användarnamn/lösenord!" }));
         } else {
-            res.status(200).json({ message: "Användaren loggades in!" });
+            //Skapa JWT
+            const payload = { username: username };
+            const token = jwt.sign(payload, process.env.JWT_SECRET_KEY, { expiresIn: '1h' });
+            const response = {
+                message: "Användaren loggades in!",
+                token: token
+            }
+            res.status(200).json({ message: response });
         }
 
     } catch (error) {
