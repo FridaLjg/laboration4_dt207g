@@ -46,13 +46,19 @@ router.post("/login", async (req, res) => {
             return res.status(400).json({ error: "Invalid input, send username and password" });
         }
 
-        //Kontrollera om inlogging stämmer
-        if (username === "Frida" && password === "hej123") {
-            res.status(200).json({ message: "Login successful" });
-        } else {
-            res.status(401).json({ error: "Invalid username/password" });
+        //Finns användaren?
+        const user = await User.findOne({ username });
+        if (!user) {
+            return res.status(401({ error: "Felaktigt användarnamn/lösenord!" }));
         }
 
+        //Kontrollera lösenordet
+        const isPasswordMatch = await user.comparePassword(password);
+        if (!isPasswordMatch) {
+            return res.status(401({ error: "Felaktigt användarnamn/lösenord!" }));
+        } else {
+            res.status(200).json({ message: "Användaren loggades in!" });
+        }
 
     } catch (error) {
         res.status(500).json({ error: "Server error" });
