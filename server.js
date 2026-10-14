@@ -2,20 +2,43 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const authRoutes = require("./routes/authRoutes");
 const jwt = require("jsonwebtoken");
+const User = require("./models/User");
 const cors = require("cors");
 require("dotenv").config();
-
 
 const app = express();
 const port = process.env.PORT || 3000;
 app.use(bodyParser.json());
+app.use(cors());
 
 //Routes
 app.use("/api", authRoutes);
 
 //Skyddad routes
-app.get("/api/protected", authenticateToken, (req, res) => {
-    res.json({ message: "Skyddad route!" });
+app.get("/api/protected", authenticateToken, async (req, res) => {
+    console.log("Username från JWT:", req.username);
+    try {
+
+        const user = await User.findOne({
+            username: req.username
+        });
+
+        if (!user) {
+            return res.status(404).json({
+                message: "Användaren hittades inte"
+            });
+        }
+
+        res.json({
+            message: `Välkommen ${user.username}!`
+        });
+
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({
+            message: "Server error"
+        });
+    }
 });
 
 //Validera Token

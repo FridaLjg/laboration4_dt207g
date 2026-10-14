@@ -33,6 +33,7 @@ router.post("/register", async (req, res) => {
         res.status(201).json({ message: "User created" });
 
     } catch (error) {
+        console.error(error);
         res.status(500).json({ error: "Server error" });
     }
 });
@@ -56,7 +57,9 @@ router.post("/login", async (req, res) => {
         //Kontrollera lösenordet
         const isPasswordMatch = await user.comparePassword(password);
         if (!isPasswordMatch) {
-            return res.status(401({ error: "Felaktigt användarnamn/lösenord!" }));
+            return res.status(401).json({
+                error: "Felaktigt användarnamn/lösenord!"
+            });
         } else {
             //Skapa JWT
             const payload = { username: username };
@@ -65,7 +68,7 @@ router.post("/login", async (req, res) => {
                 message: "Användaren loggades in!",
                 token: token
             }
-            res.status(200).json({ message: response });
+            res.status(200).json(response);
         }
 
     } catch (error) {
