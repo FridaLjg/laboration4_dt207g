@@ -52,3 +52,30 @@ userSchema.methods.comparePassword = async function (password) {
         throw error;
     }
 }
+
+//Logga in användare
+userSchema.statics.login = async function (username, password) {
+    try {
+        const user = await this.findOne({username});
+
+        if(!user) {
+            throw new Error ("Felaktigt användarnamn eller lösenord!");
+        }
+
+        const isPassWordMatch = await user.comparePassword(password);
+
+        //Felaktigt?
+        if(!isPassWordMatch) {
+            throw new Error ("Felaktigt användarnamn eller lösenord!");
+        }
+
+        //Korrekt
+        return user;
+
+    } catch (error) {
+        throw error;
+    }
+}
+
+const User = mongoose.model("User", userSchema);
+module.exports = User;
