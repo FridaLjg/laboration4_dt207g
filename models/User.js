@@ -5,13 +5,13 @@ const bcrypt = require("bcrypt");
 const userSchema = new mongoose.Schema({
     username: {
         type: String,
-        require: true,
+        required: true,
         unique: true,
         trim: true
     },
     password: {
         type: String,
-        require: true
+        required: true
     },
     created: {
         type: Date,
@@ -23,18 +23,17 @@ const userSchema = new mongoose.Schema({
 userSchema.pre("save", async function (next) {
     try {
         if (this.isNew || this.isModified("password")) {
-            const hashedPassword = bcrypt.hash(this.password, 10);
+            const hashedPassword = await bcrypt.hash(this.password, 10);
             this.password = hashedPassword;
         }
 
-        next();
     } catch (error) {
         next(error);
     }
 });
 
 //Regristrera användare
-userSchema.statics.register = async (username, password) => {
+userSchema.statics.register = async function(username, password) {
     try {
         const user = new this ({ username, password});
         await user.save();
@@ -51,7 +50,7 @@ userSchema.methods.comparePassword = async function (password) {
     } catch (error) {
         throw error;
     }
-}
+};
 
 //Logga in användare
 userSchema.statics.login = async function (username, password) {
@@ -75,7 +74,7 @@ userSchema.statics.login = async function (username, password) {
     } catch (error) {
         throw error;
     }
-}
+};
 
 const User = mongoose.model("User", userSchema);
 module.exports = User;

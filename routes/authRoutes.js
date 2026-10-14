@@ -26,6 +26,9 @@ router.post("/register", async (req, res) => {
         }
 
         //Korrekt, spara användare
+        const user = new User({ username, password });
+        await user.save();
+
         res.status(201).json({ message: "User created" });
 
     } catch (error) {
@@ -44,10 +47,10 @@ router.post("/login", async (req, res) => {
         }
 
         //Kontrollera om inlogging stämmer
-        if(username === "Frida" && password === "hej123") {
+        if (username === "Frida" && password === "hej123") {
             res.status(200).json({ message: "Login successful" });
         } else {
-             res.status(401).json({ error: "Invalid username/password" });
+            res.status(401).json({ error: "Invalid username/password" });
         }
 
 
